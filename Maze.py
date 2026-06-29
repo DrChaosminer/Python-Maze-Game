@@ -1,184 +1,198 @@
 import pygame
 import math
-World_map =  [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+import time
+
+# Die 2 in Zeile 6 (Index 5, 5) ist jetzt das Ziel
+World_map = [[1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+             [1,0,1,0,1,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1],
+             [1,0,0,0,0,0,1,0,1,1,0,1,0,1,0,1,0,1,1,1],
+             [1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1],
+             [1,0,1,0,1,0,1,1,1,1,0,1,0,1,0,1,1,1,0,1],
+             [1,1,1,0,1,1,1,0,0,0,0,1,0,0,0,0,0,1,0,1],
+             [1,0,0,0,1,1,0,0,1,0,0,1,1,1,1,1,0,1,0,1],
+             [1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1],
+             [1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,1,0,1,1,1],
+             [1,0,1,1,1,0,1,1,0,1,0,1,0,0,0,0,0,0,0,1],
+             [1,0,1,1,0,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1],
+             [1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
+             [1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,0,0,1,0,1],
+             [1,0,0,0,0,0,0,0,0,1,0,0,1,0,1,1,0,1,1,1],
+             [1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,1,0,0,0,1],
+             [1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,1,0,1],
+             [1,0,1,0,0,1,0,1,0,1,0,0,1,0,0,0,0,1,0,1],
+             [1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,1],
+             [1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1],
+             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+]
+
 pygame.init()
 WIN_HEIGHT = 720
 WIN_WIDHT = 1280
 screen = pygame.display.set_mode((WIN_WIDHT, WIN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
-WALL_SIZE = WIN_HEIGHT * 1.1
+WALL_SIZE = WIN_HEIGHT * 1.0
 
 MAX_BRIGHTNESS = 200
-DIM_FACTOR = -5
-#BLOCK_SIZE = WIN_HEIGHT / len(World_map)
+DIM_FACTOR = -15  
 
-# constant for raycasting
-LINE_WITH = 1
-NUMBER_OF_RAYS = int(WIN_WIDHT / LINE_WITH) + 1 
+LINE_WITH = 4  
+NUMBER_OF_RAYS = int(WIN_WIDHT / LINE_WITH)
 FOV = math.radians(60)
-ANGLE_BETWEEN_RAYS = FOV / (NUMBER_OF_RAYS - 1)
+ANGLE_BETWEEN_RAYS = FOV / NUMBER_OF_RAYS
 
-#constant for the speed of the player
-MOVE_SPEED = 0.06
-Rotation_speed = math.radians(1.7)
+MOVE_SPEED = 0.01
+Rotation_speed = math.radians(0.75)
+PLAYER_RADIUS = 0.25  
 
-#starting position of the player
-player_x = 10.5
-player_y = 13.5
-player_direction = math.radians(252)
+def reset_game():
+    return 10.5, 13.5, math.radians(252)
 
-#We do not want the player to be on an exact integer position or have a direction of exactly 0.
-# Occurrences of these events could result in glitches or division-by-zero errors.
-# By adding a little starting offset to the values, we make
-# these events extremely unlikely (practically impossible) to occur.
-player_x += 0.00000001
-player_y += 0.00000001
-player_direction += 0.00000001
+player_x, player_y, player_direction = reset_game()
 
-FPS =  60
+FPS = 120
+won = False
+
 while running:
     clock.tick(FPS)
+    pygame.display.set_caption(f"FPS: {int(clock.get_fps())} | Suche den goldene Block (2) auf der Map!")
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
     keys = pygame.key.get_pressed()
-    
-    screen.fill((0, 0, 0))
-    pygame.draw.rect(screen, (0, 0, 50), (0, 0, WIN_WIDHT, WIN_HEIGHT / 2))
-    pygame.draw.rect(screen, (65, 40, 20), (0, WIN_HEIGHT / 2, WIN_WIDHT, WIN_HEIGHT / 2))
-
     if keys[pygame.K_ESCAPE]:
         running = False
     
-    #Move forward
-    if keys[pygame.K_UP]:
-        new_x = player_x + math.cos(player_direction) * MOVE_SPEED
-        new_y = player_y -  math.sin(player_direction) * MOVE_SPEED
-        if World_map[int(player_y)][int(new_x)] == 0:
-            player_x = new_x
-        if World_map[int(new_y)][int(player_x)] == 0:
-            player_y = new_y
+    if not won:
+        move_x = 0
+        move_y = 0
+        if keys[pygame.K_UP]:
+            move_x += math.cos(player_direction) * MOVE_SPEED
+            move_y -= math.sin(player_direction) * MOVE_SPEED
+        if keys[pygame.K_DOWN]:
+            move_x -= math.cos(player_direction) * MOVE_SPEED
+            move_y += math.sin(player_direction) * MOVE_SPEED
 
+        buffer_x = PLAYER_RADIUS if move_x > 0 else -PLAYER_RADIUS
+        buffer_y = PLAYER_RADIUS if move_y > 0 else -PLAYER_RADIUS
 
+        if move_x != 0 and World_map[int(player_y)][int(player_x + move_x + buffer_x)] != 1:
+            player_x += move_x
 
-    #Move backwards
-    if keys[pygame.K_DOWN]:        
-        new_x = player_x - math.cos(player_direction) * MOVE_SPEED
-        new_y = player_y +  math.sin(player_direction) * MOVE_SPEED
-        if World_map[int(player_y)][int(new_x)] == 0:
-            player_x = new_x
-        if World_map[int(new_y)][int(player_x)] == 0:
-            player_y = new_y
-
-    #Spin right
-    if keys[pygame.K_RIGHT]:
-        player_direction -= Rotation_speed
-        player_direction %= 2 * math.pi 
-    #Spin Left
-    if keys[pygame.K_LEFT]:
-        player_direction += Rotation_speed
-        player_direction %= 2 * math.pi 
-    
-    # Set Values to calculate the first ray 1111
-    ray_direction = player_direction + FOV / 2
-    ray_direction %= 2 * math.pi
-    line_screen_x = 0
-
-    cell_y = (player_y - math.floor(player_y)) 
-
-    for i in range(NUMBER_OF_RAYS):
-
-        # cell in which the ray is currently located
-        ray_block_column = int(player_x)
-        ray_block_row = int(player_y)
-
-        ray_direction_degrees = math.degrees(ray_direction)
-
-        if ray_direction_degrees > 0 and ray_direction_degrees < 180:
-            next_horizontal_intersection_x = player_x + cell_y / math.tan(ray_direction)
-            delta_x = 1 / math.tan(ray_direction)
-            ray_row_movement = -1
-        else:
-            next_horizontal_intersection_x = player_x - (1 - cell_y) / math.tan(ray_direction)
-            delta_x = -1 / math.tan(ray_direction)
-            ray_row_movement = 1
-
-        # ... Make all the calculations for the raycasting here ...
-        if  (ray_direction_degrees > 270 and ray_direction_degrees < 90):
-            next_vertical_intersection_x = math.ceil(player_x)
-            ray_column_movement = 1
-        else:
-            next_vertical_intersection_x = math.floor(player_x)
-            ray_column_movement = -1
-
-        while True:
-            distance_horizontal_intersection = abs(player_x - next_horizontal_intersection_x)
-            distance_vertical_intersection = abs(player_x - next_vertical_intersection_x) 
-            if distance_horizontal_intersection < distance_vertical_intersection:
-                current_ray_x = next_horizontal_intersection_x
-                ray_block_row += ray_row_movement 
-                next_horizontal_intersection_x += delta_x
-            else:
-                current_ray_x = next_vertical_intersection_x
-                ray_block_column += ray_column_movement
-                next_vertical_intersection_x += ray_column_movement
-
-
-            if World_map[ray_block_row][ray_block_column] == 1:
-                break
+        if move_y != 0 and World_map[int(player_y + move_y + buffer_y)][int(player_x)] != 1:
+            player_y += move_y
+        if keys[pygame.K_RIGHT]:
+            player_direction = (player_direction - Rotation_speed) % (2 * math.pi)
+        if keys[pygame.K_LEFT]:
+            player_direction = (player_direction + Rotation_speed) % (2 * math.pi)
         
-        raw_distance = (current_ray_x - player_x) / math.cos(ray_direction)
-        distance_without_fish_eye = raw_distance * math.cos(player_direction - ray_direction)
+        if World_map[int(player_y)][int(player_x)] == 2 or \
+           World_map[int(player_y + buffer_y)][int(player_x + buffer_x)] == 2:
+            won = True
+    screen.fill((0, 0, 0))
+    pygame.draw.rect(screen, (10, 10, 30), (0, 0, WIN_WIDHT, WIN_HEIGHT // 2))
+    pygame.draw.rect(screen, (40, 25, 15), (0, WIN_HEIGHT // 2, WIN_WIDHT, WIN_HEIGHT // 2))
+
+
+    ray_direction = player_direction + FOV / 2
+    
+    for i in range(NUMBER_OF_RAYS):
+        ray_direction %= 2 * math.pi
+        
+        sin_a = math.sin(ray_direction)
+        cos_a = math.cos(ray_direction)
+        
+        ray_y_dir = -sin_a 
+        ray_x_dir = cos_a
+
+        map_x = int(player_x)
+        map_y = int(player_y)
+        
+        delta_dist_x = abs(1 / ray_x_dir) if ray_x_dir != 0 else 1e30
+        delta_dist_y = abs(1 / ray_y_dir) if ray_y_dir != 0 else 1e30
+        
+        if ray_x_dir < 0:
+            step_x = -1
+            side_dist_x = (player_x - map_x) * delta_dist_x
+        else:
+            step_x = 1
+            side_dist_x = (map_x + 1.0 - player_x) * delta_dist_x
+            
+        if ray_y_dir < 0:
+            step_y = -1
+            side_dist_y = (player_y - map_y) * delta_dist_y
+        else:
+            step_y = 1
+            side_dist_y = (map_y + 1.0 - player_y) * delta_dist_y
+
+        # DDA Schleife
+        hit = False
+        side = 0 
+        hit_type = 0 
+        
+        while not hit:
+            if side_dist_x < side_dist_y:
+                side_dist_x += delta_dist_x
+                map_x += step_x
+                side = 0
+            else:
+                side_dist_y += delta_dist_y
+                map_y += step_y
+                side = 1
+
+            if World_map[map_y][map_x] > 0:
+                hit_type = World_map[map_y][map_x]
+                hit = True
+
+        if side == 0:
+            perp_wall_dist = side_dist_x - delta_dist_x
+        else:
+            perp_wall_dist = side_dist_y - delta_dist_y
+            
+        perp_wall_dist = max(0.01, perp_wall_dist)
+
+        distance_without_fish_eye = perp_wall_dist * math.cos(player_direction - ray_direction)
+        distance_without_fish_eye = max(0.05, distance_without_fish_eye) 
 
         line_height = WALL_SIZE / distance_without_fish_eye
         line_start = WIN_HEIGHT / 2 - line_height / 2
-        line__start = max(line_start, 0)
-        line_end = WIN_HEIGHT / 2 + line_height / 2
-        line_end = min(line_end, WIN_HEIGHT)
 
         
-        brighness = int(DIM_FACTOR * distance_without_fish_eye + MAX_BRIGHTNESS)
-        brighness = max(brighness, 0)
-        brighness = min(brighness, 255)
+        brightness = int(DIM_FACTOR * distance_without_fish_eye + MAX_BRIGHTNESS)
+        brightness = max(10, min(brightness, 255))
+        if side == 1:
+            brightness = int(brightness * 0.7)
 
-        pygame.draw.line(screen, (0, brighness, 0), (line_screen_x, line_start), (line_screen_x, line_end), LINE_WITH)
+
+        if hit_type == 2:
+
+            color = (brightness, int(brightness * 0.8), 0)
+        else:
+
+            color = (brightness, brightness, brightness)
+
+        line_screen_x = i * LINE_WITH
+        pygame.draw.rect(screen, color, (line_screen_x, line_start, LINE_WITH, line_height))
 
         ray_direction -= ANGLE_BETWEEN_RAYS
-        ray_direction %= 2 * math.pi
-        line_screen_x += LINE_WITH
 
+
+    if won:
+        font = pygame.font.SysFont("Arial", 64, bold=True)
+        text = font.render("ZIEL ERREICHT! GEWONNEN!", True, (255, 215, 0))
+        text_rect = text.get_rect(center=(WIN_WIDHT//2, WIN_HEIGHT//2))
+        
+        pygame.draw.rect(screen, (0,0,0), (text_rect.x - 20, text_rect.y - 10, text_rect.width + 40, text_rect.height + 20))
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+        
+        time.sleep(3)
+        player_x, player_y, player_direction = reset_game()
+        won = False
+        continue
 
     pygame.display.flip()
-"""
-    for row in range(len(World_map)):
-        for col in range(len(World_map[row])):
-            if World_map[row][col] == 1:
-                pygame.draw.rect(screen, (0, 200, 0), (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-            else:
-                pygame.draw.rect(screen, (255,255,255), (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-    player_screen_x = player_x * BLOCK_SIZE
-    player_screen_y = player_y * BLOCK_SIZE
-    pygame.draw.circle(screen, (255, 0, 0), (int(player_screen_x), int(player_screen_y)), int(BLOCK_SIZE / 5))
-"""
 
-        
+pygame.quit()
