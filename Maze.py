@@ -1,33 +1,39 @@
 import pygame
 import math
 import time
+import random
+from PIL import Image
+import numpy as np
+random_start = random.randint(1, 3)
+if random_start == 1:
+    bild = Image.open("textures/Maze_1.png").convert("L")
+elif random_start == 2:
+    bild = Image.open("textures/Maze_2.png").convert("L")
+elif random_start == 3:
+    bild = Image.open("textures/Maze_3.png").convert("L")
 
-# Die 2 in Zeile 6 (Index 5, 5) ist jetzt das Ziel
-World_map = [[1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-             [1,0,1,0,1,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1],
-             [1,0,0,0,0,0,1,0,1,1,0,1,0,1,0,1,0,1,1,1],
-             [1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1],
-             [1,0,1,0,1,0,1,1,1,1,0,1,0,1,0,1,1,1,0,1],
-             [1,1,1,0,1,1,1,0,0,0,0,1,0,0,0,0,0,1,0,1],
-             [1,0,0,0,1,1,0,0,1,0,0,1,1,1,1,1,0,1,0,1],
-             [1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1],
-             [1,0,0,0,0,0,0,0,0,1,1,1,0,1,1,1,0,1,1,1],
-             [1,0,1,1,1,0,1,1,0,1,0,1,0,0,0,0,0,0,0,1],
-             [1,0,1,1,0,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1],
-             [1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
-             [1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,0,0,1,0,1],
-             [1,0,0,0,0,0,0,0,0,1,0,0,1,0,1,1,0,1,1,1],
-             [1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,1,0,0,0,1],
-             [1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,1,0,1],
-             [1,0,1,0,0,1,0,1,0,1,0,0,1,0,0,0,0,1,0,1],
-             [1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,1],
-             [1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1],
-             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-]
+pixels = np.array(bild)
+
+World_map = []
+
+for zeile in pixels:
+    neue_zeile = []
+    for pixel in zeile:
+        if pixel == 0:
+            neue_zeile.append(0)
+        elif pixel == 255:
+            neue_zeile.append(1) 
+        else:
+            neue_zeile.append(2)
+    World_map.append(neue_zeile)
+
+
+
+
 
 pygame.init()
-WIN_HEIGHT = 720
-WIN_WIDHT = 1280
+WIN_HEIGHT = 1080
+WIN_WIDHT = 1920
 screen = pygame.display.set_mode((WIN_WIDHT, WIN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
@@ -36,17 +42,17 @@ WALL_SIZE = WIN_HEIGHT * 1.0
 MAX_BRIGHTNESS = 200
 DIM_FACTOR = -15  
 
-LINE_WITH = 4  
+LINE_WITH = 3
 NUMBER_OF_RAYS = int(WIN_WIDHT / LINE_WITH)
-FOV = math.radians(60)
+FOV = math.radians(75)
 ANGLE_BETWEEN_RAYS = FOV / NUMBER_OF_RAYS
 
 MOVE_SPEED = 0.01
-Rotation_speed = math.radians(0.75)
+Rotation_speed = math.radians(0.50)
 PLAYER_RADIUS = 0.25  
 
 def reset_game():
-    return 10.5, 13.5, math.radians(252)
+    return 10.5, 13.5, math.radians(random.randint(0, 360))
 
 player_x, player_y, player_direction = reset_game()
 
@@ -68,13 +74,21 @@ while running:
     if not won:
         move_x = 0
         move_y = 0
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_w]:
             move_x += math.cos(player_direction) * MOVE_SPEED
             move_y -= math.sin(player_direction) * MOVE_SPEED
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             move_x -= math.cos(player_direction) * MOVE_SPEED
             move_y += math.sin(player_direction) * MOVE_SPEED
 
+        if keys[pygame.K_a]:
+            move_x += math.cos(player_direction + math.pi/2) * MOVE_SPEED
+            move_y -= math.sin(player_direction + math.pi/2) * MOVE_SPEED
+
+
+        if keys[pygame.K_d]:
+            move_x += math.cos(player_direction - math.pi/2) * MOVE_SPEED
+            move_y -= math.sin(player_direction - math.pi/2) * MOVE_SPEED
         buffer_x = PLAYER_RADIUS if move_x > 0 else -PLAYER_RADIUS
         buffer_y = PLAYER_RADIUS if move_y > 0 else -PLAYER_RADIUS
 
@@ -119,7 +133,7 @@ while running:
         else:
             step_x = 1
             side_dist_x = (map_x + 1.0 - player_x) * delta_dist_x
-            
+
         if ray_y_dir < 0:
             step_y = -1
             side_dist_y = (player_y - map_y) * delta_dist_y
@@ -127,7 +141,7 @@ while running:
             step_y = 1
             side_dist_y = (map_y + 1.0 - player_y) * delta_dist_y
 
-        # DDA Schleife
+        
         hit = False
         side = 0 
         hit_type = 0 
@@ -170,9 +184,8 @@ while running:
 
             color = (brightness, int(brightness * 0.8), 0)
         else:
-
             color = (brightness, brightness, brightness)
-
+                
         line_screen_x = i * LINE_WITH
         pygame.draw.rect(screen, color, (line_screen_x, line_start, LINE_WITH, line_height))
 
